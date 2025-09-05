@@ -1,48 +1,44 @@
 using System;
+using System.Text;
 
-namespace StudentGroupModule
+public class Sign
 {
-    public class StudentGroup
+    private string message;
+    private int width;
+
+    // Constructor
+    public Sign(string message, int width)
     {
-        private string groupName;
-        private string[] members;
+        this.message = message;
+        this.width = width;
+    }
 
-        // Constructor: create a group with a name and fixed size
-        public StudentGroup(string name, int size)
+    // Returns the number of lines required to display the message
+    public int NumberOfLines()
+    {
+        if (string.IsNullOrEmpty(message))
+            return 0; // Empty message case
+
+        return (message.Length + width - 1) / width; // Round up
+    }
+
+    // Returns the formatted message, with lines separated by semicolons
+    public string GetLines()
+    {
+        if (string.IsNullOrEmpty(message))
+            return null; // Empty message case
+
+        StringBuilder sb = new StringBuilder();
+        int len = message.Length;
+
+        for (int i = 0; i < len; i += width)
         {
-            groupName = name;
-            members = new string[size];
+            int end = Math.Min(i + width, len);
+            sb.Append(message.Substring(i, end - i));
+            if (end < len)
+                sb.Append(";");
         }
 
-        // Add a student at a specific position
-        public void AddMember(int position, string name)
-        {
-            if (position < 0 || position >= members.Length)
-            {
-                Console.WriteLine("Error: Invalid position.");
-                return;
-            }
-            members[position] = name;
-        }
-
-        // Retrieve a student name by position
-        public string GetMember(int position)
-        {
-            if (position < 0 || position >= members.Length)
-            {
-                return "Error: Invalid position.";
-            }
-            return members[position] ?? "No student assigned.";
-        }
-
-        // Display the group name and all members
-        public void DisplayGroup()
-        {
-            Console.WriteLine($"Group: {groupName}");
-            for (int i = 0; i < members.Length; i++)
-            {
-                Console.WriteLine(members[i] ?? "(empty)");
-            }
-        }
+        return sb.ToString();
     }
 }
